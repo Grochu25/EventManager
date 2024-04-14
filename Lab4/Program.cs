@@ -1,3 +1,6 @@
+using Lab4.Presneters;
+using Lab4.Views;
+
 namespace Lab4
 {
     internal static class Program
@@ -8,10 +11,11 @@ namespace Lab4
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new EventView());
+
+            IEventView eventView = new EventView();
+            new EventPresenter(eventView);
+            Application.Run((EventView) eventView);
         }
     }
 }

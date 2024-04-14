@@ -16,5 +16,13 @@ namespace Lab4.Views
         string Priority { get; set; }
         
         event EventHandler<EventArgs> AddNewEvent;
+        event EventHandler<EventArgs> DeleteEvent;
+        event EventHandler<EventArgs> SortEvents;
+        event EventHandler<EventArgs> SaveToFile;
+        event EventHandler<EventArgs> ReadFromFile;
+        event EventHandler<EventArgs> ShowDetails;
+
+        void SetEventListBindingSource(BindingSource bs);
+        void SetComboBoxes(IEnumerable<string> types, IEnumerable<string> priorities);
     }
 }

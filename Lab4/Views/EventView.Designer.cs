@@ -42,6 +42,7 @@
             buttonAdd = new Button();
             buttonImport = new Button();
             buttonExport = new Button();
+            buttonDelete = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView).BeginInit();
             SuspendLayout();
             // 
@@ -49,16 +50,16 @@
             // 
             dataGridView.AllowUserToAddRows = false;
             dataGridView.AllowUserToDeleteRows = false;
-            dataGridView.AllowUserToResizeColumns = false;
-            dataGridView.AllowUserToResizeRows = false;
             dataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView.EditMode = DataGridViewEditMode.EditProgrammatically;
+            dataGridView.ImeMode = ImeMode.NoControl;
             dataGridView.Location = new Point(12, 136);
             dataGridView.Name = "dataGridView";
             dataGridView.ReadOnly = true;
+            dataGridView.RowTemplate.ReadOnly = true;
+            dataGridView.ShowEditingIcon = false;
             dataGridView.Size = new Size(776, 302);
             dataGridView.TabIndex = 0;
-            dataGridView.ColumnHeaderMouseClick += dataGridView_ColumnHeaderMouseClick;
             // 
             // textBoxName
             // 
@@ -77,10 +78,12 @@
             // 
             // dateTimePicker
             // 
-            dateTimePicker.Format = DateTimePickerFormat.Short;
+            dateTimePicker.CustomFormat = "dd.MM.yyyy - hh:mm";
+            dateTimePicker.Format = DateTimePickerFormat.Custom;
+            dateTimePicker.ImeMode = ImeMode.NoControl;
             dateTimePicker.Location = new Point(68, 57);
             dateTimePicker.Name = "dateTimePicker";
-            dateTimePicker.Size = new Size(100, 23);
+            dateTimePicker.Size = new Size(137, 23);
             dateTimePicker.TabIndex = 3;
             // 
             // comboBoxType
@@ -111,7 +114,7 @@
             // labelDate
             // 
             labelDate.AutoSize = true;
-            labelDate.Location = new Point(12, 63);
+            labelDate.Location = new Point(20, 63);
             labelDate.Name = "labelDate";
             labelDate.Size = new Size(37, 15);
             labelDate.TabIndex = 7;
@@ -146,7 +149,7 @@
             // 
             // buttonAdd
             // 
-            buttonAdd.Location = new Point(166, 107);
+            buttonAdd.Location = new Point(68, 107);
             buttonAdd.Name = "buttonAdd";
             buttonAdd.Size = new Size(140, 23);
             buttonAdd.TabIndex = 11;
@@ -155,7 +158,7 @@
             // 
             // buttonImport
             // 
-            buttonImport.Location = new Point(329, 107);
+            buttonImport.Location = new Point(382, 107);
             buttonImport.Name = "buttonImport";
             buttonImport.Size = new Size(140, 23);
             buttonImport.TabIndex = 12;
@@ -164,18 +167,28 @@
             // 
             // buttonExport
             // 
-            buttonExport.Location = new Point(491, 107);
+            buttonExport.Location = new Point(537, 107);
             buttonExport.Name = "buttonExport";
             buttonExport.Size = new Size(140, 23);
             buttonExport.TabIndex = 13;
             buttonExport.Text = "Export";
             buttonExport.UseVisualStyleBackColor = true;
             // 
+            // buttonDelete
+            // 
+            buttonDelete.Location = new Point(226, 107);
+            buttonDelete.Name = "buttonDelete";
+            buttonDelete.Size = new Size(140, 23);
+            buttonDelete.TabIndex = 14;
+            buttonDelete.Text = "Usuń";
+            buttonDelete.UseVisualStyleBackColor = true;
+            // 
             // EventView
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(buttonDelete);
             Controls.Add(buttonExport);
             Controls.Add(buttonImport);
             Controls.Add(buttonAdd);
@@ -213,5 +226,6 @@
         private Button buttonAdd;
         private Button buttonImport;
         private Button buttonExport;
+        private Button buttonDelete;
     }
 }

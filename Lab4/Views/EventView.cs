@@ -9,27 +9,13 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace Lab4
 {
     public partial class EventView : Form, IEventView
-    {
-        List<Event> l;
-        BindingSource bs;
+    { 
+        private Color[] _colors = { Color.Crimson, Color.PaleGreen, Color.HotPink, Color.Goldenrod, Color.YellowGreen};
 
         public EventView()
         {
             InitializeComponent();
-            ROBOCZO();
-        }
-
-        private void ROBOCZO()
-        {
-            bs = new BindingSource();
-            l = new List<Event>() {
-                new Event("b","a",DateTime.Now,Event.EventType.SPORT,Event.EventPriority.NISKI),
-                new Event("a","b",DateTime.Now,Event.EventType.SPORT,Event.EventPriority.NISKI)
-            };
-            //l.Sort((e1, e2) => e1.Title.CompareTo(e2.Title));
-            bs.DataSource = l;
-            
-            dataGridView.DataSource = bs;
+            _associateViewEvents();
         }
 
         public string Title { get => textBoxName.Text; set => textBoxName.Text = value; }
@@ -39,30 +25,59 @@ namespace Lab4
         public string Priority { get => comboBoxPriority.Text; set => comboBoxPriority.Text = value; }
 
         public event EventHandler<EventArgs> AddNewEvent;
+        public event EventHandler<EventArgs> DeleteEvent;
+        public event EventHandler<EventArgs> SortEvents;
+        public event EventHandler<EventArgs> SaveToFile;
+        public event EventHandler<EventArgs> ReadFromFile;
+        public event EventHandler<EventArgs> ShowDetails;
 
-        private void dataGridView_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        private void _associateViewEvents()
         {
-            switch(e.ColumnIndex)
+            dataGridView.DataBindingComplete += (sender, e) => { _setColors(); };
+
+            buttonAdd.Click += (sender, e) => { AddNewEvent?.Invoke(this, EventArgs.Empty); };
+            buttonExport.Click += (sender, e) => { SaveToFile?.Invoke(this, EventArgs.Empty); };
+            buttonImport.Click += (sender, e) => { ReadFromFile?.Invoke(this, EventArgs.Empty);  };
+
+            dataGridView.ColumnHeaderMouseClick += (sender, e) => 
             {
-                case 0:
-                    l.Sort((e1, e2) => e1.Title.CompareTo(e2.Title));
-                    break;
-                case 1:
-                    l.Sort((e1, e2) => e1.Descryption.CompareTo(e2.Descryption));
-                    break;
-                case 2:
-                    l.Sort((e1, e2) => e1.Date.CompareTo(e2.Date));
-                    break;
-                case 3:
-                    l.Sort((e1, e2) => e1.Type.CompareTo(e2.Type));
-                    break;
-                case 4:
-                    l.Sort((e1, e2) => e1.Priority.CompareTo(e2.Priority));
-                    break;
-            }
-            bs.DataSource = l;
-            dataGridView.Refresh();
+                SortEvents?.Invoke(e.ColumnIndex, EventArgs.Empty); 
+                dataGridView.Refresh(); 
+            };
+
+            dataGridView.CellMouseDoubleClick += (sender, e) => 
+            { 
+                ShowDetails?.Invoke(e.RowIndex, e); 
+            };
+
+            buttonDelete.Click += (sender, e) =>
+            { 
+                DataGridView? dgv = dataGridView;
+                DeleteEvent?.Invoke(dgv?.CurrentCell.RowIndex, e); 
+            };
         }
 
+        private void _setColors()
+        {
+            foreach (DataGridViewRow row in dataGridView.Rows)
+            {
+                int typeIndex = comboBoxType.Items.IndexOf(row.Cells[2].Value.ToString());
+                if(typeIndex > _colors.Length)
+                    row.DefaultCellStyle.BackColor = Color.FromArgb(255,32,51,84);
+                else
+                    row.DefaultCellStyle.BackColor = _colors[typeIndex];
+            }
+        }
+
+        public void SetEventListBindingSource(BindingSource bs)
+        {
+            dataGridView.DataSource = bs;
+        }
+
+        public void SetComboBoxes(IEnumerable<string> types, IEnumerable<string> priorities)
+        {
+            comboBoxType.Items.AddRange(types.ToArray());
+            comboBoxPriority.Items.AddRange(priorities.ToArray());
+        }
     }
 }
