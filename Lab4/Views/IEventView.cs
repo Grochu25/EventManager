@@ -14,10 +14,12 @@ namespace Lab4.Views
         DateTime Date { get; set; }
         string Type { get; set; }
         string Priority { get; set; }
+        string Filters { get; }
         
         event EventHandler<EventArgs> AddNewEvent;
         event EventHandler<EventArgs> DeleteEvent;
         event EventHandler<EventArgs> SortEvents;
+        event EventHandler<EventArgs> FilterEvents;
         event EventHandler<EventArgs> SaveToFile;
         event EventHandler<EventArgs> ReadFromFile;
         event EventHandler<EventArgs> ShowDetails;
