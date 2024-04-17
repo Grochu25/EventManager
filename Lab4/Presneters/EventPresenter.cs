@@ -104,20 +104,26 @@ namespace Lab4.Presneters
 
         private void sortEventList(object senderColumn, EventArgs e)
         {
+            List<Models.Event> baseList;
+            if (filtered)
+                baseList = _eventFilteredList;
+            else
+                baseList = _eventFullList;
+
             int? columnNumber = Int32.Parse(senderColumn.ToString());
             switch (columnNumber)
             {
                 case 0:
-                    _eventFullList.Sort((e1, e2) => e1.Title.CompareTo(e2.Title));
+                    baseList.Sort((e1, e2) => e1.Title.CompareTo(e2.Title));
                     break;
                 case 1:
-                    _eventFullList.Sort((e1, e2) => e1.Date.CompareTo(e2.Date));
+                    baseList.Sort((e1, e2) => e1.Date.CompareTo(e2.Date));
                     break;
                 case 2:
-                    _eventFullList.Sort((e1, e2) => e1.Type.CompareTo(e2.Type));
+                    baseList.Sort((e1, e2) => e1.Type.CompareTo(e2.Type));
                     break;
                 case 3:
-                    _eventFullList.Sort((e1, e2) => e1.Priority.CompareTo(e2.Priority));
+                    baseList.Sort((e1, e2) => e1.Priority.CompareTo(e2.Priority));
                     break;
             }
 
