@@ -17,33 +17,22 @@ namespace Lab4.Presneters
         private BindingSource _eventBindingSource;
         private List<Models.Event> _eventFullList;
         private List<Models.Event> _eventFilteredList;
-        private System.Xml.Serialization.XmlSerializer _serializer;
         private bool filtered = false;
+        private string[] _filters = { "","",""};
 
         public EventPresenter(Views.IEventView view)
         {
             _view = view;
             _eventFullList = new List<Models.Event>();
             _eventBindingSource = new BindingSource();
-            _serializer = new System.Xml.Serialization.XmlSerializer(typeof(List<Models.Event>));
 
             setViewComboBoxes();
             setEventsAssociations();
             _view.SetEventListBindingSource(_eventBindingSource);
             _eventBindingSource.DataSource = _eventFullList;
 
-            LoadDataFromDefaultFile();
-        }
 
-        private void setEventsAssociations()
-        {
-            _view.AddNewEvent += AddEvent;
-            _view.DeleteEvent += DeleteEvent;
-            _view.SaveToFile += writeToXMLFile;
-            _view.ReadFromFile += readFromXMLFile;
-            _view.ShowDetails += detailsAbout;
-            _view.SortEvents += sortEventList;
-            _view.FilterEvents += filterEvents;
+            LoadDataFromDefaultFile();
         }
 
         private void setViewComboBoxes()
@@ -74,35 +63,40 @@ namespace Lab4.Presneters
             _eventBindingSource.DataSource = new List<Models.Event>(baseList);
         }
 
-        private void AddEvent(object sender, EventArgs e)
+        private void setEventsAssociations()
+        {
+            _view.AddNewEvent += AddEvent;
+            _view.DeleteEvent += DeleteEvent;
+            _view.SaveToFile += writeToFile;
+            _view.ReadFromFile += readFromFile;
+            _view.ShowDetails += detailsAbout;
+            _view.SortEvents += sortEventList;
+            _view.FilterEvents += filterEvents;
+        }
+
+        private void AddEvent()
         {
             Models.Event.EventType eventType = (Models.Event.EventType)Enum.Parse(typeof(Models.Event.EventType), _view.Type);
             Models.Event.EventPriority eventPriority = (Models.Event.EventPriority)Enum.Parse(typeof(Models.Event.EventPriority), _view.Priority);
             Models.Event eve = new Models.Event(_view.Title, _view.Description, _view.Date, eventType, eventPriority);
 
             _eventFullList.Add(eve);
+            filterEvents(_filters[0], _filters[1], _filters[2]);
             refreshList();
 
             resetViewForm();
         }
 
-        private void DeleteEvent(object senderRow, EventArgs e)
+        private void resetViewForm()
         {
-            int elementNumber = Int32.Parse(senderRow.ToString());
-            _eventFullList.RemoveAt(elementNumber);
-            refreshList();
+            _view.Title = "";
+            _view.Description = "";
+            _view.Date = DateTime.Now;
+            _view.Type = "";
+            _view.Priority = "";
         }
 
-        private void detailsAbout(object senderRow, EventArgs e)
-        {
-            if (senderRow != null)
-            {
-                string message = _eventFullList.ElementAt(Int32.Parse(senderRow.ToString())).ToString();
-                MessageBox.Show(message, "Wydarzenie", MessageBoxButtons.OK);
-            }
-        }
-
-        private void sortEventList(object senderColumn, EventArgs e)
+        private void DeleteEvent(int elementNumber)
         {
             List<Models.Event> baseList;
             if (filtered)
@@ -110,8 +104,26 @@ namespace Lab4.Presneters
             else
                 baseList = _eventFullList;
 
-            int? columnNumber = Int32.Parse(senderColumn.ToString());
-            switch (columnNumber)
+            _eventFullList.Remove(baseList.ElementAt(elementNumber));
+            filterEvents(_filters[0], _filters[1], _filters[2]);
+            refreshList();
+        }
+
+        private void detailsAbout(int rowNumber)
+        {
+            string message = _eventFullList.ElementAt(rowNumber).ToString();
+            MessageBox.Show(message, "Wydarzenie", MessageBoxButtons.OK);
+        }
+
+        private void sortEventList(int senderColumn)
+        {
+            List<Models.Event> baseList;
+            if (filtered)
+                baseList = _eventFilteredList;
+            else
+                baseList = _eventFullList;
+
+            switch (senderColumn)
             {
                 case 0:
                     baseList.Sort((e1, e2) => e1.Title.CompareTo(e2.Title));
@@ -130,21 +142,21 @@ namespace Lab4.Presneters
             refreshList();
         }
 
-        private void filterEvents(object senderColumn, EventArgs e)
+        private void filterEvents(string types, string prioriteis, string dates)
         {
+            _filters = new string[]{ types, prioriteis, dates};
             _eventFilteredList = new List<Event>(_eventFullList);
-            string[] filters = _view.Filters.Split("!");
 
             foreach(Event ev in _eventFullList)
             {
-                if (filters[0].Length > 0 && !filters[0].Split(",").Contains(ev.Type.ToString()))
+                if (_filters[0].Length > 0 && !_filters[0].Split(",").Contains(ev.Type.ToString()))
                     _eventFilteredList.Remove(ev);
-                else if (filters[1].Length > 0 && !filters[1].Split(",").Contains(ev.Priority.ToString()))
+                else if (_filters[1].Length > 0 && !_filters[1].Split(",").Contains(ev.Priority.ToString()))
                     _eventFilteredList.Remove(ev);
-                else if (filters[2].Length > 0)
+                else if (_filters[2].Length > 0)
                 {
-                    string[] dates = filters[2].Split(",");
-                    if (ev.Date < DateTime.Parse(dates[0]).Date || ev.Date > DateTime.Parse(dates[1]).Date)
+                    string[] dates_split = _filters[2].Split(",");
+                    if (ev.Date < DateTime.Parse(dates_split[0]).Date || ev.Date > DateTime.Parse(dates_split[1]).Date)
                         _eventFilteredList.Remove(ev);
                 }
             }
@@ -157,74 +169,24 @@ namespace Lab4.Presneters
             refreshList();
         }
 
-        private void resetViewForm()
-        {
-            _view.Title = "";
-            _view.Description = "";
-            _view.Date = DateTime.Now;
-            _view.Type = "";
-            _view.Priority = "";
-        }
-
         private void LoadDataFromDefaultFile() 
         {
             if(File.Exists("default.xml"))
             {
-                readFromXMLFile(null, EventArgs.Empty);
+                _eventFullList = (List<Models.Event>)FileSaverReader.ReadFile<Models.Event>("default.xml");
+                refreshList();
             }
         }
 
-        private void readFromXMLFile(object sender, EventArgs e)
+        private void readFromFile()
         {
-            TextReader reader;
-            if (sender == null)
-                reader = new StreamReader("default.xml");
-            else
-                reader = new StreamReader(openReadFileByUser());
-
-            _eventFullList = (List<Models.Event>)_serializer.Deserialize(reader);
-
-            reader.Close();
+            _eventFullList = (List<Models.Event>) FileSaverReader.ReadFile<Models.Event>(null);
             refreshList();
         }
 
-        private void writeToXMLFile(object sender, EventArgs e)
+        private void writeToFile()
         {
-            StreamWriter writer = new StreamWriter(openWriteFileByUser());
-
-            _serializer.Serialize(writer, _eventFullList);
-
-            writer.Close();
-        }
-
-        private Stream openWriteFileByUser()
-        {
-            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
-            {
-                saveFileDialog.Filter = "xml files|*.xml|All files|*.*";
-                saveFileDialog.RestoreDirectory = true;
-
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    return saveFileDialog.OpenFile();
-                }
-            }
-            return Stream.Null;
-        }
-
-        private Stream openReadFileByUser()
-        {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.Filter = "xml files|*.xml|All files|*.*";
-                openFileDialog.RestoreDirectory = true;
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    return openFileDialog.OpenFile();
-                }
-            }
-            return Stream.Null;
+            FileSaverReader.WriteFile<Models.Event>(_eventFullList);
         }
     }
 }
