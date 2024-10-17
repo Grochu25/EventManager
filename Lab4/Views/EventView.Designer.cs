@@ -93,7 +93,7 @@
             // 
             // dateTimePicker
             // 
-            dateTimePicker.CustomFormat = "dd.MM.yyyy - hh:mm";
+            dateTimePicker.CustomFormat = "dd.MM.yyyy - HH:mm";
             dateTimePicker.Format = DateTimePickerFormat.Custom;
             dateTimePicker.ImeMode = ImeMode.NoControl;
             dateTimePicker.Location = new Point(68, 57);
