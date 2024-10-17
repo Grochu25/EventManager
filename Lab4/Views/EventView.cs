@@ -1,22 +1,19 @@
-using Lab4.Models;
-using Lab4.Views;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Text;
-using System.Windows.Forms;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Lab4
+namespace Lab4.Views
 {
     public partial class EventView : Form, IEventView
     {
+        private IEnumerable<string> types;
+        private IEnumerable<string> priorities;
         private Color[] _colors = { Color.Crimson, Color.PaleGreen, Color.HotPink, Color.Goldenrod, Color.YellowGreen };
 
         public EventView()
         {
             InitializeComponent();
             _associateViewEvents();
+            types = new List<string>();
+            priorities = new List<string>();
         }
 
         public string Title { get => textBoxName.Text; set => textBoxName.Text = value; }
@@ -30,19 +27,22 @@ namespace Lab4
         public event Action<int> SortEvents;
         public event Action<string, string, string> FilterEvents;
         public event Action SaveToFile;
+        public event Action exitEvent;
         public event Action ReadFromFile;
         public event Action<int> ShowDetails;
 
         private void _associateViewEvents()
         {
             dataGridView.DataBindingComplete += (sender, e) => { _setColors(); };
+            this.FormClosing += (sender, e) => { exitEvent?.Invoke(); };
             buttonExport.Click += (sender, e) => { SaveToFile?.Invoke(); };
             buttonImport.Click += (sender, e) => { ReadFromFile?.Invoke(); };
             dataGridView.ColumnHeaderMouseClick += (sender, e) => { SortEvents?.Invoke(e.ColumnIndex); };
             dataGridView.CellMouseDoubleClick += (sender, e) => { ShowDetails?.Invoke(e.RowIndex); };
 
-            buttonAdd.Click += (sender, e) => {
-                if (_notEmpty(textBoxName) & _notEmpty(textBoxDescription) & _notEmpty(dateTimePicker) & _notEmpty(comboBoxType) & _notEmpty(comboBoxPriority))
+            buttonAdd.Click += (sender, e) =>
+            {
+                if (_controlNotEmpty(textBoxName) & _controlNotEmpty(textBoxDescription) & _controlNotEmpty(dateTimePicker) & _controlNotEmpty(comboBoxType) & _controlNotEmpty(comboBoxPriority))
                     AddNewEvent?.Invoke();
             };
 
@@ -65,14 +65,14 @@ namespace Lab4
             }
         }
 
-        private bool _notEmpty(Control control)
+        private bool _controlNotEmpty(Control control)
         {
             if (control.Text.Trim().Length == 0)
             {
                 errorProvider.SetError(control, "Puste pole");
                 return false;
             }
-            errorProvider.SetError(control,"");
+            errorProvider.SetError(control, "");
             return true;
         }
 
@@ -81,10 +81,47 @@ namespace Lab4
             dataGridView.DataSource = bs;
         }
 
-        public void SetComboBoxes(IEnumerable<string> types, IEnumerable<string> priorities)
+        public void SetTypesAndPriorites(IEnumerable<string> types, IEnumerable<string> priorities)
+        {
+            this.types = types;
+            this.priorities = priorities;
+
+            addTypesAndPrioritiesToComboBoxes();
+            createFiltersCheckBoxes();
+        }
+
+        private void addTypesAndPrioritiesToComboBoxes()
         {
             comboBoxType.Items.AddRange(types.ToArray());
             comboBoxPriority.Items.AddRange(priorities.ToArray());
+        }
+
+        private void createFiltersCheckBoxes()
+        {
+            foreach (string type in types)
+            {
+                string name = "checkBox" + type.Substring(0, 1).ToUpper() + type.Substring(1);
+                CheckBox newBox = createCheckBox(name, type);
+                flowLayoutPanelType.Controls.Add(newBox);
+            }
+
+            foreach (string priority in priorities)
+            {
+                string name = "checkBox" + priority.Substring(0, 1).ToUpper() + priority.Substring(1);
+                CheckBox newBox = createCheckBox(name, priority);
+                flowLayoutPanelPriority.Controls.Add(newBox);
+            }
+        }
+
+        private CheckBox createCheckBox(string name, string label)
+        {
+            CheckBox newBox = new CheckBox();
+            newBox.AutoSize = true;
+            newBox.Name = name;
+            newBox.Text = label;
+            newBox.UseVisualStyleBackColor = true;
+            newBox.CheckedChanged += checkboxFilterClicked;
+            return newBox;
         }
 
         public void checkboxFilterClicked(object sender, EventArgs e)
@@ -98,8 +135,8 @@ namespace Lab4
             StringBuilder filterString = new StringBuilder();
 
             filterString.Append("");
-            foreach (Control x in flowLayoutPanelType.Controls)  
-            { 
+            foreach (Control x in flowLayoutPanelType.Controls)
+            {
                 {
                     CheckBox checkbox = x as CheckBox;
                     if (checkbox.Checked)
@@ -133,5 +170,6 @@ namespace Lab4
 
             return filterString.ToString().Split("!");
         }
+
     }
 }

@@ -9,7 +9,7 @@ namespace Lab4.Models
 {
     public class Event : IComparable<Event>
     {
-        public enum EventType { PRACA, RODZINA, ROZRYWKA, ZDROWIE, SPORT }
+        public enum EventType { SPORT, PRACA, RODZINA, ROZRYWKA, ZDROWIE}
         public enum EventPriority { WYSOKI, SREDNI, NISKI}
 
 

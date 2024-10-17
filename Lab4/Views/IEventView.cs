@@ -21,9 +21,10 @@ namespace Lab4.Views
         event Action<string, string, string> FilterEvents;
         event Action SaveToFile;
         event Action ReadFromFile;
+        event Action exitEvent;
         event Action<int> ShowDetails;
 
         void SetEventListBindingSource(BindingSource bs);
-        void SetComboBoxes(IEnumerable<string> types, IEnumerable<string> priorities);
+        void SetTypesAndPriorites(IEnumerable<string> types, IEnumerable<string> priorities);
     }
 }

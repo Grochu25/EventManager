@@ -1,4 +1,4 @@
-﻿namespace Lab4
+﻿namespace Lab4.Views
 {
     partial class EventView
     {
@@ -44,16 +44,8 @@
             buttonImport = new Button();
             buttonExport = new Button();
             buttonDelete = new Button();
-            checkBoxPraca = new CheckBox();
-            checkBoxSport = new CheckBox();
-            checkBoxRodzina = new CheckBox();
-            checkBoxZdrowie = new CheckBox();
             flowLayoutPanelType = new FlowLayoutPanel();
-            checkBoxRozrywka = new CheckBox();
             flowLayoutPanelPriority = new FlowLayoutPanel();
-            checkBoxWysoki = new CheckBox();
-            checkBoxSredni = new CheckBox();
-            checkBoxNiski = new CheckBox();
             panel1 = new Panel();
             dateTimePickerFilterTo = new DateTimePicker();
             dateTimePickerFilterFrom = new DateTimePicker();
@@ -64,8 +56,6 @@
             labelFilterType = new Label();
             errorProvider = new ErrorProvider(components);
             ((System.ComponentModel.ISupportInitialize)dataGridView).BeginInit();
-            flowLayoutPanelType.SuspendLayout();
-            flowLayoutPanelPriority.SuspendLayout();
             panel1.SuspendLayout();
             groupBoxFilters.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider).BeginInit();
@@ -208,128 +198,34 @@
             buttonDelete.Text = "Usuń";
             buttonDelete.UseVisualStyleBackColor = true;
             // 
-            // checkBoxPraca
-            // 
-            checkBoxPraca.AutoSize = true;
-            checkBoxPraca.Location = new Point(3, 3);
-            checkBoxPraca.Name = "checkBoxPraca";
-            checkBoxPraca.Size = new Size(64, 19);
-            checkBoxPraca.TabIndex = 0;
-            checkBoxPraca.Text = "PRACA";
-            checkBoxPraca.UseVisualStyleBackColor = true;
-            checkBoxPraca.CheckedChanged += checkboxFilterClicked;
-            // 
-            // checkBoxSport
-            // 
-            checkBoxSport.AutoSize = true;
-            checkBoxSport.Location = new Point(73, 3);
-            checkBoxSport.Name = "checkBoxSport";
-            checkBoxSport.Size = new Size(60, 19);
-            checkBoxSport.TabIndex = 1;
-            checkBoxSport.Text = "SPORT";
-            checkBoxSport.UseVisualStyleBackColor = true;
-            checkBoxSport.CheckedChanged += checkboxFilterClicked;
-            // 
-            // checkBoxRodzina
-            // 
-            checkBoxRodzina.AutoSize = true;
-            checkBoxRodzina.Location = new Point(139, 3);
-            checkBoxRodzina.Name = "checkBoxRodzina";
-            checkBoxRodzina.Size = new Size(77, 19);
-            checkBoxRodzina.TabIndex = 2;
-            checkBoxRodzina.Text = "RODZINA";
-            checkBoxRodzina.UseVisualStyleBackColor = true;
-            checkBoxRodzina.CheckedChanged += checkboxFilterClicked;
-            // 
-            // checkBoxZdrowie
-            // 
-            checkBoxZdrowie.AutoSize = true;
-            checkBoxZdrowie.Location = new Point(3, 28);
-            checkBoxZdrowie.Name = "checkBoxZdrowie";
-            checkBoxZdrowie.Size = new Size(77, 19);
-            checkBoxZdrowie.TabIndex = 3;
-            checkBoxZdrowie.Text = "ZDROWIE";
-            checkBoxZdrowie.UseVisualStyleBackColor = true;
-            checkBoxZdrowie.CheckedChanged += checkboxFilterClicked;
-            // 
             // flowLayoutPanelType
             // 
             flowLayoutPanelType.AutoSize = true;
-            flowLayoutPanelType.Controls.Add(checkBoxPraca);
-            flowLayoutPanelType.Controls.Add(checkBoxSport);
-            flowLayoutPanelType.Controls.Add(checkBoxRodzina);
-            flowLayoutPanelType.Controls.Add(checkBoxZdrowie);
-            flowLayoutPanelType.Controls.Add(checkBoxRozrywka);
+            flowLayoutPanelType.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             flowLayoutPanelType.Location = new Point(6, 37);
-            flowLayoutPanelType.MaximumSize = new Size(230, 100);
+            flowLayoutPanelType.MaximumSize = new Size(225, 100);
+            flowLayoutPanelType.MinimumSize = new Size(200, 50);
             flowLayoutPanelType.Name = "flowLayoutPanelType";
-            flowLayoutPanelType.Size = new Size(219, 50);
+            flowLayoutPanelType.Size = new Size(200, 50);
             flowLayoutPanelType.TabIndex = 17;
-            // 
-            // checkBoxRozrywka
-            // 
-            checkBoxRozrywka.AutoSize = true;
-            checkBoxRozrywka.Location = new Point(86, 28);
-            checkBoxRozrywka.Name = "checkBoxRozrywka";
-            checkBoxRozrywka.Size = new Size(89, 19);
-            checkBoxRozrywka.TabIndex = 4;
-            checkBoxRozrywka.Text = "ROZRYWKA";
-            checkBoxRozrywka.UseVisualStyleBackColor = true;
-            checkBoxRozrywka.CheckedChanged += checkboxFilterClicked;
             // 
             // flowLayoutPanelPriority
             // 
             flowLayoutPanelPriority.AutoSize = true;
             flowLayoutPanelPriority.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            flowLayoutPanelPriority.Controls.Add(checkBoxWysoki);
-            flowLayoutPanelPriority.Controls.Add(checkBoxSredni);
-            flowLayoutPanelPriority.Controls.Add(checkBoxNiski);
-            flowLayoutPanelPriority.Location = new Point(6, 129);
-            flowLayoutPanelPriority.MaximumSize = new Size(230, 100);
+            flowLayoutPanelPriority.Location = new Point(6, 137);
+            flowLayoutPanelPriority.MaximumSize = new Size(225, 100);
+            flowLayoutPanelPriority.MinimumSize = new Size(200, 25);
             flowLayoutPanelPriority.Name = "flowLayoutPanelPriority";
-            flowLayoutPanelPriority.Size = new Size(206, 25);
+            flowLayoutPanelPriority.Size = new Size(200, 25);
             flowLayoutPanelPriority.TabIndex = 18;
-            // 
-            // checkBoxWysoki
-            // 
-            checkBoxWysoki.AutoSize = true;
-            checkBoxWysoki.Location = new Point(3, 3);
-            checkBoxWysoki.Name = "checkBoxWysoki";
-            checkBoxWysoki.Size = new Size(69, 19);
-            checkBoxWysoki.TabIndex = 0;
-            checkBoxWysoki.Text = "WYSOKI";
-            checkBoxWysoki.UseVisualStyleBackColor = true;
-            checkBoxWysoki.CheckedChanged += checkboxFilterClicked;
-            // 
-            // checkBoxSredni
-            // 
-            checkBoxSredni.AutoSize = true;
-            checkBoxSredni.Location = new Point(78, 3);
-            checkBoxSredni.Name = "checkBoxSredni";
-            checkBoxSredni.Size = new Size(65, 19);
-            checkBoxSredni.TabIndex = 1;
-            checkBoxSredni.Text = "SREDNI";
-            checkBoxSredni.UseVisualStyleBackColor = true;
-            checkBoxSredni.CheckedChanged += checkboxFilterClicked;
-            // 
-            // checkBoxNiski
-            // 
-            checkBoxNiski.AutoSize = true;
-            checkBoxNiski.Location = new Point(149, 3);
-            checkBoxNiski.MaximumSize = new Size(200, 100);
-            checkBoxNiski.Name = "checkBoxNiski";
-            checkBoxNiski.Size = new Size(54, 19);
-            checkBoxNiski.TabIndex = 2;
-            checkBoxNiski.Text = "NISKI";
-            checkBoxNiski.UseVisualStyleBackColor = true;
-            checkBoxNiski.CheckedChanged += checkboxFilterClicked;
             // 
             // panel1
             // 
             panel1.Controls.Add(dateTimePickerFilterTo);
             panel1.Controls.Add(dateTimePickerFilterFrom);
             panel1.Controls.Add(checkBoxData);
-            panel1.Location = new Point(6, 196);
+            panel1.Location = new Point(6, 205);
             panel1.Name = "panel1";
             panel1.Size = new Size(187, 93);
             panel1.TabIndex = 19;
@@ -344,7 +240,7 @@
             dateTimePickerFilterTo.Name = "dateTimePickerFilterTo";
             dateTimePickerFilterTo.Size = new Size(111, 23);
             dateTimePickerFilterTo.TabIndex = 22;
-            dateTimePickerFilterTo.Value = DateTime.Now;
+            dateTimePickerFilterTo.Value = new DateTime(2024, 4, 19, 17, 35, 31, 436);
             dateTimePickerFilterTo.ValueChanged += checkboxFilterClicked;
             // 
             // dateTimePickerFilterFrom
@@ -381,7 +277,7 @@
             groupBoxFilters.Controls.Add(flowLayoutPanelPriority);
             groupBoxFilters.Location = new Point(561, 140);
             groupBoxFilters.Name = "groupBoxFilters";
-            groupBoxFilters.Size = new Size(227, 298);
+            groupBoxFilters.Size = new Size(230, 298);
             groupBoxFilters.TabIndex = 20;
             groupBoxFilters.TabStop = false;
             groupBoxFilters.Text = "Filtruj po:";
@@ -389,7 +285,7 @@
             // labelFilterDate
             // 
             labelFilterDate.AutoSize = true;
-            labelFilterDate.Location = new Point(9, 178);
+            labelFilterDate.Location = new Point(9, 187);
             labelFilterDate.Name = "labelFilterDate";
             labelFilterDate.Size = new Size(42, 15);
             labelFilterDate.TabIndex = 23;
@@ -398,7 +294,7 @@
             // labelFilterPrioritet
             // 
             labelFilterPrioritet.AutoSize = true;
-            labelFilterPrioritet.Location = new Point(6, 114);
+            labelFilterPrioritet.Location = new Point(6, 122);
             labelFilterPrioritet.Name = "labelFilterPrioritet";
             labelFilterPrioritet.Size = new Size(66, 15);
             labelFilterPrioritet.TabIndex = 22;
@@ -439,12 +335,8 @@
             Controls.Add(textBoxName);
             Controls.Add(dataGridView);
             Name = "EventView";
-            Text = "Form1";
+            Text = "Wydarzenia";
             ((System.ComponentModel.ISupportInitialize)dataGridView).EndInit();
-            flowLayoutPanelType.ResumeLayout(false);
-            flowLayoutPanelType.PerformLayout();
-            flowLayoutPanelPriority.ResumeLayout(false);
-            flowLayoutPanelPriority.PerformLayout();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             groupBoxFilters.ResumeLayout(false);
@@ -471,16 +363,8 @@
         private Button buttonImport;
         private Button buttonExport;
         private Button buttonDelete;
-        private CheckBox checkBoxPraca;
-        private CheckBox checkBoxZdrowie;
-        private CheckBox checkBoxRodzina;
-        private CheckBox checkBoxSport;
-        private CheckBox checkBoxRozrywka;
         private FlowLayoutPanel flowLayoutPanelType;
         private FlowLayoutPanel flowLayoutPanelPriority;
-        private CheckBox checkBoxWysoki;
-        private CheckBox checkBoxSredni;
-        private CheckBox checkBoxNiski;
         private Panel panel1;
         private CheckBox checkBoxData;
         private GroupBox groupBoxFilters;

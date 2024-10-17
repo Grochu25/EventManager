@@ -27,7 +27,6 @@ namespace Lab4.Presneters
                     reader = new StreamReader(stream);
             }
 
-
             if (reader != null)
             {
                 returnList = (List<T>)_serializer.Deserialize(reader);
@@ -54,8 +53,20 @@ namespace Lab4.Presneters
 
         public static void WriteFile<T>(IEnumerable collection)
         {
-
             StreamWriter? writer = new StreamWriter(openWriteFileByUser());
+            System.Xml.Serialization.XmlSerializer _serializer = new System.Xml.Serialization.XmlSerializer(typeof(List<T>));
+
+            if (writer != null)
+            {
+                _serializer.Serialize(writer, collection);
+            }
+
+            writer?.Close();
+        }
+
+        public static void WriteFileToDefault<T>(IEnumerable collection)
+        {
+            StreamWriter? writer = new StreamWriter("default.xml");
             System.Xml.Serialization.XmlSerializer _serializer = new System.Xml.Serialization.XmlSerializer(typeof(List<T>));
 
             if (writer != null)

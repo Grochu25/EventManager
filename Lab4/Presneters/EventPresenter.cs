@@ -1,13 +1,6 @@
 ﻿using Lab4.Models;
 using Lab4.Views;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Windows.Forms.AxHost;
+using System.Diagnostics.Tracing;
 
 namespace Lab4.Presneters
 {
@@ -24,18 +17,19 @@ namespace Lab4.Presneters
         {
             _view = view;
             _eventFullList = new List<Models.Event>();
+            _eventFilteredList = new List<Models.Event>();
             _eventBindingSource = new BindingSource();
 
-            setViewComboBoxes();
+            passEnumsToView();
             setEventsAssociations();
             _view.SetEventListBindingSource(_eventBindingSource);
             _eventBindingSource.DataSource = _eventFullList;
 
 
-            LoadDataFromDefaultFile();
+            LoadDataFromDefaultFileIfExist();
         }
 
-        private void setViewComboBoxes()
+        private void passEnumsToView()
         {
             List<string> types = new List<string>();
             List<string> priori = new List<string>();
@@ -50,17 +44,22 @@ namespace Lab4.Presneters
                 priori.Add(ep.ToString());
             }
 
-            _view.SetComboBoxes(types, priori);
+            _view.SetTypesAndPriorites(types, priori);
         }
 
-        private void refreshList()
+        private List<Models.Event> getCurrentList()
         {
             List<Models.Event> baseList;
             if (filtered)
                 baseList = _eventFilteredList;
             else
                 baseList = _eventFullList;
-            _eventBindingSource.DataSource = new List<Models.Event>(baseList);
+            return baseList;
+        }
+
+        private void refreshList()
+        {
+            _eventBindingSource.DataSource = new List<Models.Event>(getCurrentList());
         }
 
         private void setEventsAssociations()
@@ -72,19 +71,24 @@ namespace Lab4.Presneters
             _view.ShowDetails += detailsAbout;
             _view.SortEvents += sortEventList;
             _view.FilterEvents += filterEvents;
+            _view.exitEvent += writeToFileOnExit;
         }
 
         private void AddEvent()
         {
-            Models.Event.EventType eventType = (Models.Event.EventType)Enum.Parse(typeof(Models.Event.EventType), _view.Type);
-            Models.Event.EventPriority eventPriority = (Models.Event.EventPriority)Enum.Parse(typeof(Models.Event.EventPriority), _view.Priority);
-            Models.Event eve = new Models.Event(_view.Title, _view.Description, _view.Date, eventType, eventPriority);
-
+            Models.Event eve = createEvent();
             _eventFullList.Add(eve);
             filterEvents(_filters[0], _filters[1], _filters[2]);
             refreshList();
 
             resetViewForm();
+        }
+
+        private Models.Event createEvent()
+        {
+            Models.Event.EventType eventType = (Models.Event.EventType)Enum.Parse(typeof(Models.Event.EventType), _view.Type);
+            Models.Event.EventPriority eventPriority = (Models.Event.EventPriority)Enum.Parse(typeof(Models.Event.EventPriority), _view.Priority);
+            return new Models.Event(_view.Title, _view.Description, _view.Date, eventType, eventPriority);
         }
 
         private void resetViewForm()
@@ -98,44 +102,32 @@ namespace Lab4.Presneters
 
         private void DeleteEvent(int elementNumber)
         {
-            List<Models.Event> baseList;
-            if (filtered)
-                baseList = _eventFilteredList;
-            else
-                baseList = _eventFullList;
-
-            _eventFullList.Remove(baseList.ElementAt(elementNumber));
+            _eventFullList.Remove(getCurrentList().ElementAt(elementNumber));
             filterEvents(_filters[0], _filters[1], _filters[2]);
             refreshList();
         }
 
-        private void detailsAbout(int rowNumber)
+        private void detailsAbout(int elementNumber)
         {
-            string message = _eventFullList.ElementAt(rowNumber).ToString();
+            string message = getCurrentList().ElementAt(elementNumber).ToString();
             MessageBox.Show(message, "Wydarzenie", MessageBoxButtons.OK);
         }
 
         private void sortEventList(int senderColumn)
         {
-            List<Models.Event> baseList;
-            if (filtered)
-                baseList = _eventFilteredList;
-            else
-                baseList = _eventFullList;
-
             switch (senderColumn)
             {
                 case 0:
-                    baseList.Sort((e1, e2) => e1.Title.CompareTo(e2.Title));
+                    getCurrentList().Sort((e1, e2) => e1.Title.CompareTo(e2.Title));
                     break;
                 case 1:
-                    baseList.Sort((e1, e2) => e1.Date.CompareTo(e2.Date));
+                    getCurrentList().Sort((e1, e2) => e1.Date.CompareTo(e2.Date));
                     break;
                 case 2:
-                    baseList.Sort((e1, e2) => e1.Type.CompareTo(e2.Type));
+                    getCurrentList().Sort((e1, e2) => e1.Type.CompareTo(e2.Type));
                     break;
                 case 3:
-                    baseList.Sort((e1, e2) => e1.Priority.CompareTo(e2.Priority));
+                    getCurrentList().Sort((e1, e2) => e1.Priority.CompareTo(e2.Priority));
                     break;
             }
 
@@ -147,7 +139,16 @@ namespace Lab4.Presneters
             _filters = new string[]{ types, prioriteis, dates};
             _eventFilteredList = new List<Event>(_eventFullList);
 
-            foreach(Event ev in _eventFullList)
+            deleteElementsByFilters();
+
+            setFilteredFlag();
+
+            refreshList();
+        }
+
+        private void deleteElementsByFilters()
+        {
+            foreach (Event ev in _eventFullList)
             {
                 if (_filters[0].Length > 0 && !_filters[0].Split(",").Contains(ev.Type.ToString()))
                     _eventFilteredList.Remove(ev);
@@ -160,16 +161,17 @@ namespace Lab4.Presneters
                         _eventFilteredList.Remove(ev);
                 }
             }
+        }
 
+        private void setFilteredFlag()
+        {
             if (_eventFilteredList.Count == _eventFullList.Count)
                 filtered = false;
             else
                 filtered = true;
-
-            refreshList();
         }
 
-        private void LoadDataFromDefaultFile() 
+        private void LoadDataFromDefaultFileIfExist() 
         {
             if(File.Exists("default.xml"))
             {
@@ -187,6 +189,11 @@ namespace Lab4.Presneters
         private void writeToFile()
         {
             FileSaverReader.WriteFile<Models.Event>(_eventFullList);
+        }
+
+        private void writeToFileOnExit()
+        {
+            FileSaverReader.WriteFileToDefault<Models.Event>(_eventFullList);
         }
     }
 }
