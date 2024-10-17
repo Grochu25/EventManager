@@ -109,8 +109,11 @@ namespace Lab4.Presneters
 
         private void detailsAbout(int elementNumber)
         {
-            string message = getCurrentList().ElementAt(elementNumber).ToString();
-            MessageBox.Show(message, "Wydarzenie", MessageBoxButtons.OK);
+            if (elementNumber >= 0)
+            {
+                string message = getCurrentList().ElementAt(elementNumber).ToString();
+                MessageBox.Show(message, "Wydarzenie", MessageBoxButtons.OK);
+            }
         }
 
         private void sortEventList(int senderColumn)
