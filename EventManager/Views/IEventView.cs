@@ -1,11 +1,11 @@
-﻿using Lab4.Models;
+﻿using EventManager.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lab4.Views
+namespace EventManager.Views
 {
     internal interface IEventView
     {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lab4.Models
+namespace EventManager.Models
 {
     public class Event : IComparable<Event>
     {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lab4.Presneters
+namespace EventManager.Presneters
 {
     static class FileSaverReader
     {

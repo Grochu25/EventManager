@@ -1,7 +1,7 @@
-using Lab4.Presneters;
-using Lab4.Views;
+using EventManager.Presneters;
+using EventManager.Views;
 
-namespace Lab4
+namespace EventManager
 {
     internal static class Program
     {

@@ -1,8 +1,8 @@
-﻿using Lab4.Models;
-using Lab4.Views;
+﻿using EventManager.Models;
+using EventManager.Views;
 using System.Diagnostics.Tracing;
 
-namespace Lab4.Presneters
+namespace EventManager.Presneters
 {
     internal class EventPresenter
     {

@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace Lab4.Views
+namespace EventManager.Views
 {
     public partial class EventView : Form, IEventView
     {

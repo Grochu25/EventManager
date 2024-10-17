@@ -1,4 +1,4 @@
-﻿namespace Lab4.Views
+﻿namespace EventManager.Views
 {
     partial class EventView
     {
